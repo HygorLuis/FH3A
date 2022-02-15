@@ -24,5 +24,9 @@ CREATE TABLE Simulacao (
     DataInclusao DATETIME NOT NULL
 );
 
+OU
+
+Restaure o backup da pasta db
+
 **2)** Configure a solução para Multiplos Projetos
 ![image](https://user-images.githubusercontent.com/20724269/154062399-7cab3943-1af7-4e57-9469-cf6309b052b5.png)
