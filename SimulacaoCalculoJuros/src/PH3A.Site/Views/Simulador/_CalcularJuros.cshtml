@@ -1,0 +1,103 @@
+﻿@model PH3A.Domain.Models.Simulacao
+
+@{
+    ViewData["Title"] = "Calcular Juros";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row col-md-6">
+            <div class="form-group col-md-6">
+                <label asp-for="PorcentagemJuros" class="control-label"></label>
+                <div class="input-group mb-3">
+                    <input id="porcentagemJuros" asp-for="PorcentagemJuros" class="form-control" onkeyup="maskInput()"/>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">%</span>
+                    </div>
+                </div>
+                <span asp-validation-for="PorcentagemJuros" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label asp-for="TipoCalculo" class="control-label"></label>
+                @foreach (var tc in Enum.GetValues(typeof(TipoJuros)))
+                {
+                    <div class="custom-control custom-radio">
+                        @if ((int)tc == 1)
+                        {
+                            <input type="radio" asp-for="TipoCalculo" id="tipoCalculo@((int)tc)" value="@((int)tc)" class="custom-control-input" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" asp-for="TipoCalculo" id="tipoCalculo@((int)tc)" value="@((int)tc)" class="custom-control-input">
+                        }
+                        <label asp-for="TipoCalculo" class="custom-control-label" for="tipoCalculo@((int)tc)">@tc</label>
+                    </div>
+                }
+                <span asp-validation-for="TipoCalculo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-md-2" style="margin-top: 32px;">
+                <input type="submit" value="Simular Cálculo" class="btn btn-primary" onclick="calcularJuros()" />
+            </div>
+        </div>
+
+        <div class="row col-md-6">
+            <div class="form-group col-md-6">
+                <label asp-for="TotalJuros" class="control-label"></label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$</span>
+                    </div>
+                    <input id="totalJuros" asp-for="TotalJuros" class="form-control" disabled/>
+                </div>
+
+                <span asp-validation-for="TotalJuros" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="TotalDivida" class="control-label"></label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">R$</span>
+                    </div>
+                    <input id="totalDivida" asp-for="TotalDivida" class="form-control" disabled/>
+                </div>
+                <span asp-validation-for="TotalDivida" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    function calcularJuros() {
+        var PorcentagemJuros = $('#porcentagemJuros').val();
+        var TipoCalculo = $('input[name=TipoCalculo]:checked').val();
+
+        $.ajax({
+            type: 'POST',
+            url: "@Url.Action("CalcularJurosParcela", "Simulador")",
+            data: { PorcentagemJuros, TipoCalculo },
+            success: function (data) {
+                $('#calcularJuros').html(data);
+                $('#totalJuros').mask('#.##0,00', { reverse: true });
+                $('#totalDivida').mask('#.##0,00', { reverse: true });
+            },
+            error: function(data) {
+            }
+        });
+    }
+
+    function maskInput() {
+        $('#porcentagemJuros').mask('#.##0,000', { reverse: true });
+    }
+
+</script>

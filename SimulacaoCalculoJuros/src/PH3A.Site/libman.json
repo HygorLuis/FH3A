@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [{
+  "library": "jquery.mask@1.14.16",
+  "destination": "wwwroot/jquery.mask/"
+}
+,
+{
+  "library": "jquery.mask@1.14.16",
+  "destination": "wwwroot/js/jquery.mask/"
+}
+,
+{
+  "library": "jquery.mask@1.14.16",
+  "destination": "wwwroot/js/jquery.mask/"
+}
+]
+}
