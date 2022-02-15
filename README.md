@@ -1,4 +1,4 @@
---**************************SimulacaoCalculoJuros**************************--
+**1)** Crie um Banco de Dados com o nome **SimulacaoCalculoJuros**, e depois as tabelas com a seguinte estrutura:
 
 CREATE TABLE Parcela (
     Id INT PRIMARY KEY IDENTITY (1, 1),
@@ -23,3 +23,6 @@ CREATE TABLE Simulacao (
     TotalDivida DECIMAL(20,2) NOT NULL,
     DataInclusao DATETIME NOT NULL
 );
+
+**2)** Configure a solução para Multiplos Projetos
+![image](https://user-images.githubusercontent.com/20724269/154062399-7cab3943-1af7-4e57-9469-cf6309b052b5.png)
