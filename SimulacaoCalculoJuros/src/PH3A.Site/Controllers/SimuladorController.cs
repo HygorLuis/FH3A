@@ -119,14 +119,20 @@ namespace PH3A.Site.Controllers
             if (!parcelas.Any()) return PartialView("_CalcularJuros", simulacao);
 
             var juros = new List<Juros>();
-
             parcelas.ForEach(x =>
             {
-                juros.Add(new Juros
+                var calculoJuros = new Juros(x.Id);
+                switch(simulacao.TipoCalculo)
                 {
-                    IdParcela = x.Id,
-                    ValorJuros = CalcularTipoJuros(x, simulacao)
-                });
+                    case TipoJuros.Linear:
+                        calculoJuros.Linear(x, simulacao.PorcentagemJuros.GetValueOrDefault());
+                        break;
+
+                    case TipoJuros.Capitalizado:
+                        calculoJuros.Capitalizado(x, simulacao.PorcentagemJuros.GetValueOrDefault());
+                        break;
+                }
+                juros.Add(calculoJuros);
             });
 
             simulacao.TotalJuros = juros.Sum(x => x.ValorJuros);
@@ -137,25 +143,6 @@ namespace PH3A.Site.Controllers
                 await _jurosService.IncluirJuros(juros, id);
 
             return PartialView("_CalcularJuros", simulacao);
-        }
-
-        private decimal CalcularTipoJuros(Parcela parcela, Simulacao simulacao)
-        {
-            decimal valorJuros = 0;
-            var atraso = (decimal)(parcela.DataVencimento < DateTime.Today ? (DateTime.Today - parcela.DataVencimento)?.Days : 0);
-
-            switch (simulacao.TipoCalculo)
-            {
-                case TipoJuros.Linear:
-                    valorJuros = parcela.Valor.GetValueOrDefault() * simulacao.PorcentagemJuros.GetValueOrDefault() * (atraso / 30);
-                    break;
-
-                case TipoJuros.Capitalizado:
-                    valorJuros = parcela.Valor.GetValueOrDefault() * (decimal)(Math.Pow((double)(1 + simulacao.PorcentagemJuros.GetValueOrDefault()), (double)(atraso / 30)) - 1);
-                    break;
-            }
-
-            return valorJuros;
         }
 
         #endregion
